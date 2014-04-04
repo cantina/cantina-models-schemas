@@ -1,0 +1,25 @@
+{
+  "name": "cantina-models-schemas",
+  "version": "0.0.0",
+  "description": "Schemas for cantina-models",
+  "private": true,
+  "main": "cantina-models-schemas.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cantina/cantina-models-schemas.git"
+  },
+  "author": "",
+  "license": "none",
+  "bugs": {
+    "url": "https://github.com/cantina/cantina-models-schemas/issues"
+  },
+  "homepage": "https://github.com/cantina/cantina-models-schemas",
+  "devDependencies": {
+    "mocha": "^1.18.2",
+    "cantina": "git+ssh://git@github.com:cantina/cantina.git#3.x",
+    "cantina-models": "git+ssh://git@github.com:cantina/cantina-models.git#3.1.x"
+  }
+}
