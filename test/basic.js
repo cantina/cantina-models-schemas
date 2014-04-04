@@ -3,31 +3,7 @@ describe('basic', function () {
   var nested = require('nested-objects');
 
   var app
-    , schema = {
-        _name: 'test',
-        properties: {
-          id: {
-            type: 'string',
-            required: true,
-            validators: [(function (val) { return 'number' === typeof val; })]
-          },
-          name: {
-            first: {
-              type: 'string',
-              validators: [validateString]
-            },
-            last: {
-              type: 'string',
-              validators: [validateString],
-              default: ''
-            }
-          }
-        }
-      };
-
-  function validateString (val) {
-    return val.match(/^[A-Za-z -]+$/);
-  }
+    , testSchema = require('./fixtures/schemas/test');
 
   before(function (done) {
     app = require('cantina');
@@ -46,12 +22,26 @@ describe('basic', function () {
 
   it('works', function () {
     assert(app.schemas);
-    assert.equal(typeof app.schemas.parse, 'function');
-    assert.equal(typeof app.schemas.extend, 'function');
+    assert.equal(typeof app.Schema, 'function');
+    assert.equal(typeof app.loadSchemas, 'function');
+  });
+
+  it('throws if schema has no name', function () {
+    assert.throws(function () {
+      var badSchema = new app.Schema({});
+    });
+    assert.doesNotThrow(function () {
+      var goodSchema = new app.Schema({name: 'good'});
+    });
+  });
+
+  it('can load schemas from a directory', function () {
+    app.loadSchemas('test/fixtures/schemas');
+    assert(app.schemas.test);
   });
 
   it('can parse a schema', function () {
-    var parsed = app.schemas.parse(schema);
+    var parsed = app.schemas.test._parse();
     assert(parsed);
     assert(parsed.create);
     assert(parsed.save);
@@ -60,28 +50,36 @@ describe('basic', function () {
   });
 
   it('can extend a schema', function () {
-    schema = app.schemas.extend(schema, {
+    var extended = app.schemas.test.extend({
+      name: 'extended',
       properties: {
         name: {
           first: {
             required: true
           }
+        },
+        age: {
+          type: 'number',
+          default: 0
         }
       }
     });
-    assert.strictEqual(nested.get(schema, 'properties.name.first.required'), true);
-    assert.strictEqual(nested.get(schema, 'properties.name.first.type'), 'string');
-    assert.strictEqual(nested.get(schema, 'properties.name.last.type'), 'string');
-    var parsed = app.schemas.parse(schema);
+    assert.equal(extended.name, 'extended');
+    assert.strictEqual(nested.get(extended.properties, 'name.first.required'), true);
+    assert.strictEqual(nested.get(extended.properties, 'name.first.type'), 'string');
+    assert.strictEqual(nested.get(extended.properties, 'name.last.type'), 'string');
+    assert.strictEqual(nested.get(extended.properties, 'age.type'), 'number');
+
+    var parsed = extended._parse();
     assert(parsed);
     assert(parsed.create);
     assert(parsed.save);
-    assert.equal(parsed.create.length, 1);
+    assert.equal(parsed.create.length, 2);
     assert.equal(parsed.save.length, 5);
   });
 
   it('can generate options to pass into cantina-models', function () {
-    var options = app.schemas.getCollectionOptions(schema);
+    var options = app.schemas.test.getOptions();
     assert(options);
     assert(options.create);
     assert(options.save);
