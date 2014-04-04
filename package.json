@@ -21,5 +21,8 @@
     "mocha": "^1.18.2",
     "cantina": "git+ssh://git@github.com:cantina/cantina.git#3.x",
     "cantina-models": "git+ssh://git@github.com:cantina/cantina-models.git#3.1.x"
+  },
+  "dependencies": {
+    "nested-objects": "0.0.1"
   }
 }
