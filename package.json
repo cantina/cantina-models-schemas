@@ -23,6 +23,7 @@
     "cantina-models": "git+ssh://git@github.com:cantina/cantina-models.git#3.1.x"
   },
   "dependencies": {
-    "nested-objects": "0.0.1"
+    "nested-objects": "0.0.1",
+    "clone": "^0.1.11"
   }
 }
