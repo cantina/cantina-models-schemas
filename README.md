@@ -61,7 +61,7 @@ schemas). Example:
 app.Schema.extend(app.schemas.user, {
   properties: {
     username: {
-      require: false
+      required: false
     }
   }
 });
