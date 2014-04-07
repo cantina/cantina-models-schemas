@@ -5,19 +5,82 @@ Schemas for cantina-models
 
 ###Provides:
 
-- **app.schemas.getCollectionOptions(schema)**
-  - parses a schema and returns an options hash to pass to (cantina-models)[//github.com/cantina/cantina-models]
-- **app.schemas.parse(schema)**
-  - parses a schema and returns an hash of defined defaults, validators, etc. (only really useful for `app.schemas.getCollectionOptions`)
-- **app.schemas.extend(destination, source)**
-  - returns a new copy of the `destination` schema as extended by `source`; performs deep extend
+- **app.loadSchemas(dir, cwd)**
+  - Load schema definitions from a directory.
+- **app.schemas**
+  - Loaded schemas, keyed by name.
+- **app.Schema**
+  - The Schema class. Instances are created from definitions loaded by `app.loadSchemas()`.
+
+###Usage:
+
+```js
+var app = require('cantina');
+
+app.boot(function (err) {
+  assert.ifError(err);
+
+  // You probably want models too.
+  require('cantina-models');
+  require('cantina-models-redis');
+
+  // Load this plugin.
+  require('cantina-models-schemas');
+
+  // Load schemas from the `[app.root]/schemas` folder.
+  //
+  // See 'Schema Definition' below for more information about what should go
+  // in this folder. For now, we'll assume we have a `user` schema to load.
+  app.loadSchemas('schemas');
+
+  // Create a collection from a loaded schema.
+  app.createRedisCollection('users', app.schemas.users.getOptions({
+    // You can override or add options here.
+  }));
+
+  app.start(done);
+});
+```
 
 ###Schema:
 
-A schema is an plain `Object` with the following properties:
+A `Schema` objects wraps a schema definition (see below) with functionality
+to help integrate it into your `cantina-models` collections.
 
-- **_name (required)** {String}
-- **_indexes** {Array}
+**Schema(schema)**
+
+Constructor. Pass your schema's definition.
+
+
+**schema.extend**
+
+Extend an existing schema, creating a new instance from it. Example:
+
+```js
+// [app-root]/schemas/teacher.js
+module.exports = app.schemas.user.extend({
+  name: 'teacher',
+  properties: {
+    grade: {
+      type: 'number',
+      required: true
+    }
+  }
+})
+```
+
+**schema.getOptions(options)**
+
+Returns options ready to be passed into `app.create[Store]Collection`. Most
+importantly, the schema definition will be converted into model hooks (create,
+ save, etc.).
+
+###Schema Definitions:
+
+A schema definition is an plain `Object` with the following properties:
+
+- **name (required)** {String}
+- **indexes** {Array}
 - **properties** {Object}
 
 ####Schema Property:
@@ -42,12 +105,12 @@ following properties:
 - **prepare** {Function}
   - property will be assigned the return value of the prepare function on `save`
 
-###Example:
+###Example Schema Definition:
 
 ```js
 module.exports = {
-  _name: 'users',
-  _indexes: [
+  name: 'users',
+  indexes: [
     { email_lc: 1 },
     { 'name.sortable': 1 }
   ],
