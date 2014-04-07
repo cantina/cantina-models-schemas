@@ -51,10 +51,26 @@ to help integrate it into your `cantina-models` collections.
 
 Constructor. Pass your schema's definition.
 
+**Schema.extend(target, source[s])**
 
-**schema.extend**
+Deep-Extend the target schema with one or more source schemas (or parts of
+schemas). Example:
 
-Extend an existing schema, creating a new instance from it. Example:
+```js
+// Change default user schema so that `username` is no longer a required property
+app.Schema.extend(app.schemas.user, {
+  properties: {
+    username: {
+      require: false
+    }
+  }
+});
+```
+
+**schema.extend(source[s])**
+
+Create a new deep-extended schema from an existing schema, using one or more
+passed in schemas (or parts of schemas). Example:
 
 ```js
 // [app-root]/schemas/teacher.js
