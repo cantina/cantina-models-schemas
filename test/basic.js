@@ -37,7 +37,7 @@ describe('basic', function () {
 
   it('can load schemas from a directory', function () {
     app.loadSchemas('test/fixtures/schemas');
-    assert(app.schemas.test);
+    assert(app.schemas.test instanceof app.Schema);
   });
 
   it('can parse a schema', function () {
@@ -49,7 +49,25 @@ describe('basic', function () {
     assert.equal(parsed.save.length, 4);
   });
 
-  it('can extend a schema', function () {
+  it('can extend an existing schema', function () {
+    app.Schema.extend(app.schemas.test, {
+      properties: {
+        occupation: {
+          type: 'string'
+        }
+      }
+    }, {
+      properties: {
+        occupation: {
+          default: 'ditch digger'
+        }
+      }
+    });
+    assert.strictEqual(nested.get(app.schemas.test.properties, 'occupation.type'), 'string');
+    assert.strictEqual(nested.get(app.schemas.test.properties, 'occupation.default'), 'ditch digger');
+  });
+
+  it('can create an extended schema from an existing schema', function () {
     var extended = app.schemas.test.extend({
       name: 'extended',
       properties: {
@@ -74,7 +92,7 @@ describe('basic', function () {
     assert(parsed);
     assert(parsed.create);
     assert(parsed.save);
-    assert.equal(parsed.create.length, 2);
+    assert.equal(parsed.create.length, 3); // 1 from app.schemas.test originally, 1 added to app.schemas.test in previous test, and 1 added by extension here
     assert.equal(parsed.save.length, 5);
   });
 
