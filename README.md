@@ -114,12 +114,12 @@ following properties:
   - default value for the property to apply if absent on `create`
 - **validators** {Array}
   - an array of validator functions to apply to the property on `save`
+- **prepare** {Function}
+  - property will be assigned the return value of the prepare function on `save`
 
 @todo
 - **private** {Boolean} [default: false]
   - private properties will not be included among the returned model's fields
-- **prepare** {Function}
-  - property will be assigned the return value of the prepare function on `save`
 
 ###Example Schema Definition:
 

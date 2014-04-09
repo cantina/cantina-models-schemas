@@ -18,6 +18,21 @@ module.exports = {
         type: 'string',
         validators: [validateString],
         default: ''
+      },
+      full: {
+        type: 'string',
+        prepare: function (model) {
+          var full = [];
+          if (model.name) {
+            if (model.name.first) {
+              full.push(model.name.first);
+            }
+            if (model.name.last) {
+              full.push(model.name.last);
+            }
+          }
+          return full.join(' ');
+        }
       }
     }
   }

@@ -46,7 +46,7 @@ describe('basic', function () {
     assert(parsed.create);
     assert(parsed.save);
     assert.equal(parsed.create.length, 1);
-    assert.equal(parsed.save.length, 4);
+    assert.equal(parsed.save.length, 5);
   });
 
   it('can extend an existing schema', function () {
@@ -93,7 +93,7 @@ describe('basic', function () {
     assert(parsed.create);
     assert(parsed.save);
     assert.equal(parsed.create.length, 3); // 1 from app.schemas.test originally, 1 added to app.schemas.test in previous test, and 1 added by extension here
-    assert.equal(parsed.save.length, 5);
+    assert.equal(parsed.save.length, 6);
   });
 
   it('can generate options to pass into cantina-models', function () {
@@ -103,5 +103,39 @@ describe('basic', function () {
     assert(options.save);
     assert.equal(typeof options.create, 'function');
     assert.equal(typeof options.save, 'function');
+  });
+
+  it('runs the hooks', function (done) {
+    var ct = 10
+      , obj = {
+          id: 1,
+          name: {
+            first: 'Zero',
+            last:  'Mostel'
+          }
+        };
+    // Push our observers onto the hook stacks
+    app.on('schema:test:create', function (model) {
+      assert(model); ct--;
+      assert(model.id); ct--;
+      assert(model.name.first); ct--;
+      assert(model.name.last); ct--;
+    });
+    app.hook('schema:test:save').add(function (model, next) {
+      assert(model); ct--;
+      assert(model.id); ct--;
+      assert(model.name.first); ct--;
+      assert(model.name.last); ct--;
+      assert(model.name.full); ct--;
+      assert.strictEqual(model.name.full, 'Zero Mostel'); ct--;
+      next();
+    });
+    var options = app.schemas.test.getOptions();
+    options.create(obj);
+    options.save(obj, function (err) {
+      assert.ifError(err);
+      assert.strictEqual(ct, 0);
+      done();
+    });
   });
 });
