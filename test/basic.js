@@ -163,5 +163,28 @@ describe('basic', function () {
       assert.strictEqual(obj._version, app.schemas.test.version);
       done();
     });
-  })
+  });
+
+  it('enforces strict schemas', function (done) {
+    var obj = {
+      id: 2,
+      name: {
+        first: 'Zero',
+        last: 'Mostel',
+        nickname: 'ZeroM'
+      },
+      password: 'unsafe'
+    };
+
+    var options = app.schemas.test.getOptions();
+    options.create(obj);
+    assert(obj.password);
+    assert(obj.name.nickname);
+    options.save(obj, function (err) {
+      assert.ifError(err);
+      assert(!obj.password);
+      assert(!obj.name.nickname);
+      done();
+    });
+  });
 });
