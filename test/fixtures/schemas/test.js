@@ -3,6 +3,7 @@
  */
 module.exports = {
   name: 'test',
+  version: '0.0.1',
   properties: {
     id: {
       type: 'string',

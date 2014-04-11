@@ -28,10 +28,19 @@ describe('basic', function () {
 
   it('throws if schema has no name', function () {
     assert.throws(function () {
-      var badSchema = new app.Schema({});
+      var badSchema = new app.Schema({version: '0.0.0'});
     });
     assert.doesNotThrow(function () {
-      var goodSchema = new app.Schema({name: 'good'});
+      var goodSchema = new app.Schema({name: 'good', version: '1.0.0'});
+    });
+  });
+
+  it('throws if schema has no version', function () {
+    assert.throws(function () {
+      var badSchema = new app.Schema({name: 'bad'});
+    });
+    assert.doesNotThrow(function () {
+      var goodSchema = new app.Schema({name: 'good', version: '1.0.0'});
     });
   });
 
@@ -46,7 +55,7 @@ describe('basic', function () {
     assert(parsed.create);
     assert(parsed.save);
     assert.equal(parsed.create.length, 1);
-    assert.equal(parsed.save.length, 5);
+    assert.equal(parsed.save.length, 6);
   });
 
   it('can extend an existing schema', function () {
@@ -93,7 +102,7 @@ describe('basic', function () {
     assert(parsed.create);
     assert(parsed.save);
     assert.equal(parsed.create.length, 3); // 1 from app.schemas.test originally, 1 added to app.schemas.test in previous test, and 1 added by extension here
-    assert.equal(parsed.save.length, 6);
+    assert.equal(parsed.save.length, 7);
   });
 
   it('can generate options to pass into cantina-models', function () {
@@ -138,4 +147,21 @@ describe('basic', function () {
       done();
     });
   });
+
+  it('sets the version on the model', function (done) {
+    var obj = {
+      id: 1,
+      name: {
+        first: 'Zero',
+        last:  'Mostel'
+      }
+    };
+    var options = app.schemas.test.getOptions();
+    options.create(obj);
+    options.save(obj, function (err) {
+      assert.ifError(err);
+      assert.strictEqual(obj._version, app.schemas.test.version);
+      done();
+    });
+  })
 });
