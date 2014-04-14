@@ -55,7 +55,7 @@ describe('basic', function () {
     assert(parsed.create);
     assert(parsed.save);
     assert.equal(parsed.create.length, 1);
-    assert.equal(parsed.save.length, 6);
+    assert.equal(parsed.save.length, 7);
   });
 
   it('can extend an existing schema', function () {
@@ -102,7 +102,7 @@ describe('basic', function () {
     assert(parsed.create);
     assert(parsed.save);
     assert.equal(parsed.create.length, 3); // 1 from app.schemas.test originally, 1 added to app.schemas.test in previous test, and 1 added by extension here
-    assert.equal(parsed.save.length, 7);
+    assert.equal(parsed.save.length, 8);
   });
 
   it('can generate options to pass into cantina-models', function () {
@@ -163,5 +163,28 @@ describe('basic', function () {
       assert.strictEqual(obj._version, app.schemas.test.version);
       done();
     });
-  })
+  });
+
+  it('enforces strict schemas', function (done) {
+    var obj = {
+      id: 2,
+      name: {
+        first: 'Zero',
+        last: 'Mostel',
+        nickname: 'ZeroM'
+      },
+      password: 'unsafe'
+    };
+
+    var options = app.schemas.test.getOptions();
+    options.create(obj);
+    assert(obj.password);
+    assert(obj.name.nickname);
+    options.save(obj, function (err) {
+      assert.ifError(err);
+      assert(!obj.password);
+      assert(!obj.name.nickname);
+      done();
+    });
+  });
 });
