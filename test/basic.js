@@ -54,8 +54,10 @@ describe('basic', function () {
     assert(parsed);
     assert(parsed.create);
     assert(parsed.save);
+    assert(app.schemas.test.privateProperties);
     assert.equal(parsed.create.length, 1);
     assert.equal(parsed.save.length, 7);
+    assert.deepEqual(app.schemas.test.privateProperties, ['auth.hash', 'auth.secret']);
   });
 
   it('can extend an existing schema', function () {

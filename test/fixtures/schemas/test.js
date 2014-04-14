@@ -35,6 +35,16 @@ module.exports = {
           return full.join(' ');
         }
       }
+    },
+    auth: {
+      hash: {
+        type: 'string',
+        private: true
+      },
+      secret: {
+        type: 'string',
+        private: true
+      }
     }
   }
 };
