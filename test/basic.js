@@ -55,7 +55,7 @@ describe('basic', function () {
     assert(parsed.create);
     assert(parsed.save);
     assert.equal(parsed.create.length, 1);
-    assert.equal(parsed.save.length, 6);
+    assert.equal(parsed.save.length, 7);
   });
 
   it('can extend an existing schema', function () {
@@ -102,7 +102,7 @@ describe('basic', function () {
     assert(parsed.create);
     assert(parsed.save);
     assert.equal(parsed.create.length, 3); // 1 from app.schemas.test originally, 1 added to app.schemas.test in previous test, and 1 added by extension here
-    assert.equal(parsed.save.length, 7);
+    assert.equal(parsed.save.length, 8);
   });
 
   it('can generate options to pass into cantina-models', function () {
