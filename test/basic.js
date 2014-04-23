@@ -56,7 +56,10 @@ describe('basic', function () {
     assert(parsed.save);
     assert(app.schemas.test.privateProperties);
     assert.equal(parsed.create.length, 1);
-    assert.equal(parsed.save.length, 7);
+    assert.equal(parsed.save.length, 4);
+    assert.equal(typeof app.schemas.test.defaults, 'function');
+    assert.equal(typeof app.schemas.test.prepare, 'function');
+    assert.equal(typeof app.schemas.test.validate, 'function');
     assert.deepEqual(app.schemas.test.privateProperties, ['auth.hash', 'auth.secret']);
   });
 
@@ -98,13 +101,19 @@ describe('basic', function () {
     assert.strictEqual(nested.get(extended.properties, 'name.first.type'), 'string');
     assert.strictEqual(nested.get(extended.properties, 'name.last.type'), 'string');
     assert.strictEqual(nested.get(extended.properties, 'age.type'), 'number');
+    assert.strictEqual(nested.get(extended.properties, 'occupation.type'), 'string');
+    assert.strictEqual(nested.get(extended.properties, 'occupation.default'), 'ditch digger');
 
     var parsed = extended._parse();
     assert(parsed);
     assert(parsed.create);
     assert(parsed.save);
-    assert.equal(parsed.create.length, 3); // 1 from app.schemas.test originally, 1 added to app.schemas.test in previous test, and 1 added by extension here
-    assert.equal(parsed.save.length, 8);
+
+    var obj = {};
+    extended.defaults(obj);
+    assert.strictEqual(nested.get(obj, 'name.last'), '');
+    assert.strictEqual(nested.get(obj, 'occupation'), 'ditch digger');
+    assert.strictEqual(nested.get(obj, 'age'), 0);
   });
 
   it('can generate options to pass into cantina-models', function () {
@@ -188,5 +197,47 @@ describe('basic', function () {
       assert(!obj.name.nickname);
       done();
     });
+  });
+
+  it('provides santize method', function () {
+    var obj = {
+      id: 3,
+      name: {
+        first: 'Zero',
+        last: 'Mostel',
+        nickname: 'ZeroM'
+      },
+      password: 'unsafe'
+    };
+    app.schemas.test.sanitize(obj);
+    assert(obj.id);
+    assert(obj.name.first);
+    assert(obj.name.last);
+    assert.strictEqual(obj.password, undefined);
+    assert.strictEqual(obj.name.nickname, undefined);
+  });
+  it('provides defaults method', function () {
+    var obj = {};
+    app.schemas.test.defaults(obj);
+    assert.strictEqual(obj.name.first, undefined);
+    assert.strictEqual(obj.name.last, '');
+    assert.strictEqual(obj.occupation, 'ditch digger');
+  });
+  it('provides prepare method', function () {
+    var obj = {
+      id: 4,
+      name: {
+        first: 'Zero',
+        last: 'Mostel',
+        nickname: 'ZeroM'
+      },
+      password: 'unsafe'
+    };
+    app.schemas.test.prepare(obj);
+    assert.strictEqual(obj.name.full, 'Zero Mostel');
+  });
+  it('provides validate method', function () {
+    var result = app.schemas.test.validate({});
+    assert.ok(result instanceof Error);
   });
 });
