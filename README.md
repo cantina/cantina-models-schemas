@@ -116,8 +116,6 @@ following properties:
   - an array of validator functions to apply to the property on `save`
 - **prepare** {Function}
   - property will be assigned the return value of the prepare function on `save`
-
-@todo
 - **private** {Boolean} [default: false]
   - private properties will not be included among the returned model's fields
 
