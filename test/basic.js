@@ -216,6 +216,7 @@ describe('basic', function () {
     assert.strictEqual(obj.password, undefined);
     assert.strictEqual(obj.name.nickname, undefined);
   });
+
   it('provides defaults method', function () {
     var obj = {};
     app.schemas.test.defaults(obj);
@@ -223,6 +224,7 @@ describe('basic', function () {
     assert.strictEqual(obj.name.last, '');
     assert.strictEqual(obj.occupation, 'ditch digger');
   });
+
   it('provides prepare method', function () {
     var obj = {
       id: 4,
@@ -236,8 +238,12 @@ describe('basic', function () {
     app.schemas.test.prepare(obj);
     assert.strictEqual(obj.name.full, 'Zero Mostel');
   });
+
   it('provides validate method', function () {
     var result = app.schemas.test.validate({});
-    assert.ok(result instanceof Error);
+    assert(Array.isArray(result) && result.length);
+    result.every(function (err) {
+      assert(err instanceof Error);
+    });
   });
 });
