@@ -91,6 +91,31 @@ Returns options ready to be passed into `app.create[Store]Collection`. Most
 importantly, the schema definition will be converted into model hooks (create,
  save, etc.).
 
+**schema.sanitize(model)**
+
+Sanitizes the model -- properties defined on the schema as `private`, as well as
+properties not defined on the schema (if the schema is defined as `strict`), are
+removed.
+
+**schema.defaults(model)**
+
+Default property values defined on the schema are assigned to the model if not
+already assigned.
+
+**schema.prepare(model)**
+
+Prepare methods defined on the schema are called on the model.
+
+**schema.validate(model)**
+
+Validators defined on the schema are called on the model. Returns an array of
+errors or null.
+
+**schema.attach(collection, callback)**
+
+Extends the target collection with the schema's `sanitize`, `defaults`,
+`prepare`, and `validate` methods.
+
 ###Schema Definitions:
 
 A schema definition is an plain `Object` with the following properties:
