@@ -19,8 +19,11 @@
   "homepage": "https://github.com/cantina/cantina-models-schemas",
   "devDependencies": {
     "mocha": "^1.18.2",
+    "idgen": "^2.0.2",
     "cantina": "git+ssh://git@github.com:cantina/cantina.git#3.x",
-    "cantina-models": "git+ssh://git@github.com:cantina/cantina-models.git#3.1.x"
+    "cantina-models": "git+ssh://git@github.com:cantina/cantina-models.git#3.1.x",
+    "cantina-models-mongo": "git+ssh://git@github.com:cantina/cantina-models-mongo.git#3.x",
+    "cantina-mongo": "git+ssh://git@github.com:cantina/cantina-mongo#3.x"
   },
   "dependencies": {
     "nested-objects": "0.0.1",

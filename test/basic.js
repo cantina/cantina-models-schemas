@@ -10,14 +10,18 @@ describe('basic', function () {
     app.boot(function (err) {
       assert.ifError(err);
 
+      app.conf.set('mongo:db', 'cantina-models-schemas-test-' + idgen());
       require('../');
+      require('cantina-models-mongo');
 
       app.start(done);
     });
   });
 
   after(function (done) {
-    app.destroy(done);
+    app.mongo.dropDatabase(function () {
+      app.destroy(done);
+    });
   });
 
   it('works', function () {
@@ -216,6 +220,7 @@ describe('basic', function () {
     assert.strictEqual(obj.password, undefined);
     assert.strictEqual(obj.name.nickname, undefined);
   });
+
   it('provides defaults method', function () {
     var obj = {};
     app.schemas.test.defaults(obj);
@@ -223,6 +228,7 @@ describe('basic', function () {
     assert.strictEqual(obj.name.last, '');
     assert.strictEqual(obj.occupation, 'ditch digger');
   });
+
   it('provides prepare method', function () {
     var obj = {
       id: 4,
@@ -236,8 +242,38 @@ describe('basic', function () {
     app.schemas.test.prepare(obj);
     assert.strictEqual(obj.name.full, 'Zero Mostel');
   });
+
   it('provides validate method', function () {
     var result = app.schemas.test.validate({});
-    assert.ok(result instanceof Error);
+    assert(Array.isArray(result) && result.length);
+    result.every(function (err) {
+      assert(err instanceof Error);
+    });
+  });
+
+  it('attaches to a collection', function (done) {
+    var extended = app.schemas.test.extend({
+      indexes: {
+        mongo: [{ 'name.last': 1 }]
+      }
+    });
+    app.createMongoCollection('test', extended.getOptions({
+      init: function (collection) {
+        extended.attach(collection, function (err) {
+          if (err) return done(err);
+          assert.equal(collection.sanitize, extended.sanitize);
+          assert.equal(collection.defaults, extended.defaults);
+          assert.equal(collection.prepare, extended.prepare);
+          assert.equal(collection.validate, extended.validate);
+          collection._indexInformation(function (err, indexes) {
+            if (err) return done(err);
+            assert.ok('name.last_1' in indexes);
+            assert.strictEqual(indexes['name.last_1'].length, 1);
+            assert.deepEqual(indexes['name.last_1'][0], ['name.last', 1]);
+            done();
+          });
+        });
+      }
+    }));
   });
 });
