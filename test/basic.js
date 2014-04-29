@@ -239,8 +239,7 @@ describe('basic', function () {
       },
       password: 'unsafe'
     };
-    app.schemas.test.prepare(obj);
-    assert.strictEqual(obj.name.full, 'Zero Mostel');
+    assert.strictEqual(app.schemas.test.prepare(obj).name.full, 'Zero Mostel');
   });
 
   it('provides validate method', function () {
@@ -249,6 +248,16 @@ describe('basic', function () {
     result.every(function (err) {
       assert(err instanceof Error);
     });
+    var obj = {
+      id: 5,
+      name: {
+        first: 'Zero',
+        last: 'Mostel',
+        nickname: 'ZeroM'
+      }
+    };
+    result = app.schemas.test.validate(obj);
+    assert.strictEqual(result, null);
   });
 
   it('exits the hooks with validation errors', function (done) {
