@@ -251,6 +251,21 @@ describe('basic', function () {
     });
   });
 
+  it('exits the hooks with validation errors', function (done) {
+    var ct = 10
+      , obj = {
+        name: {
+          first: 'Zero',
+          last:  'Mostel'
+        }
+      };
+    var options = app.schemas.test.getOptions();
+    options.save(obj, function (err) {
+      assert(err);
+      done();
+    });
+  });
+
   it('attaches to a collection', function (done) {
     var extended = app.schemas.test.extend({
       indexes: {
