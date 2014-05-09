@@ -95,21 +95,20 @@ importantly, the schema definition will be converted into model hooks (create,
 
 Sanitizes the model -- properties defined on the schema as `private`, as well as
 properties not defined on the schema (if the schema is defined as `strict`), are
-removed.
+removed. Returns the model.
 
 **schema.defaults(model)**
 
 Default property values defined on the schema are assigned to the model if not
-already assigned.
+already assigned. Returns the model.
 
 **schema.prepare(model)**
 
-Prepare methods defined on the schema are called on the model.
+Prepare methods defined on the schema are called on the model. Returns the model.
 
 **schema.validate(model)**
 
-Validators defined on the schema are called on the model. Returns an array of
-errors or null.
+Validators defined on the schema are called on the model. Returns an error or null.
 
 **schema.attach(collection, callback)**
 
