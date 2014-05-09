@@ -244,8 +244,9 @@ describe('basic', function () {
 
   it('provides validate method', function () {
     var result = app.schemas.test.validate({});
-    assert(Array.isArray(result) && result.length);
-    result.every(function (err) {
+    assert(result instanceof Error);
+    assert(Array.isArray(result.properties) && result.properties.length);
+    result.properties.every(function (err) {
       assert(err instanceof Error);
     });
     var obj = {
