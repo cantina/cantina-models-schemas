@@ -280,11 +280,12 @@ describe('basic', function () {
           assert.equal(collection.defaults, extended.defaults);
           assert.equal(collection.prepare, extended.prepare);
           assert.equal(collection.validate, extended.validate);
-          collection._indexInformation(function (err, indexes) {
+          collection._getIndexes(function (err, indexes) {
             if (err) return done(err);
-            assert.ok('name.last_1' in indexes);
-            assert.strictEqual(indexes['name.last_1'].length, 1);
-            assert.deepEqual(indexes['name.last_1'][0], ['name.last', 1]);
+            var index;
+            assert.ok(indexes.some(function (idx) { if (idx.name === 'name.last_1') { index = idx; return true; } }));
+            assert.strictEqual(Object.keys(index.key).length, 1);
+            assert.deepEqual(index.key, { 'name.last': 1 });
             done();
           });
         });
