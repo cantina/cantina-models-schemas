@@ -262,16 +262,48 @@ describe('basic', function () {
   });
 
   it('exits the hooks with validation errors', function (done) {
-    var ct = 10
-      , obj = {
-        name: {
-          first: 'Zero',
-          last:  'Mostel'
-        }
-      };
+    var obj = {
+          name: {
+            first: 'Zero',
+            last:  'Mostel'
+          }
+        };
     var options = app.schemas.test.getOptions();
     options.save(obj, function (err) {
       assert(err);
+      assert.equal(err.code, 'ECANTINANOTVALID');
+      done();
+    });
+  });
+
+  it('uses custom validator error messages', function (done) {
+    var obj = {
+          id: 6,
+          name: {
+            first: 'Freddy',
+            last:  'Mercury'
+          }
+        };
+    var schema = app.Schema.extend(app.schemas.test, {
+      name: 'custom_messages',
+      properties: {
+        name: {
+          first: {
+            validators: [[function (prop) { return !/^F/.test(prop); }, 'Cannot start with F']]
+          },
+          last: {
+            validators: [{ validator: function (prop) { return !/y$/.test(prop); }, message: 'Cannot end with y'}]
+          }
+        }
+      }
+    });
+    var options = schema.getOptions();
+    options.save(obj, function (err) {
+      assert(err);
+      assert.equal(err.code, 'ECANTINANOTVALID');
+      assert.strictEqual(err.properties.length, 2);
+      assert.strictEqual(err.properties[0].message, 'Cannot start with F');
+      assert.strictEqual(err.properties[1].message, 'Cannot end with y');
       done();
     });
   });
