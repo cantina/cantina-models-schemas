@@ -138,6 +138,7 @@ following properties:
   - default value for the property to apply if absent on `create`
 - **validators** {Array}
   - an array of validator functions to apply to the property on `save`
+  - each validator can provide a custom error message to use instead of the default (see the schema for examples both custom formats)
 - **prepare** {Function}
   - property will be assigned the return value of the prepare function on `save`
 - **private** {Boolean} [default: false]
@@ -168,7 +169,7 @@ module.exports = {
     username: {
       type: 'string',
       required: true,
-      validators: [app.validators.matches(/^[a-zA-Z0-9_]{3,32}$/)]
+      validators: [{ validator: app.validators.matches(/^[a-zA-Z0-9_]{3,32}$/), message: 'Username may only contain letters, numbers and the underscore character and must be 3 to 32 characters long.'] // demonstrates using an object to defined a custom error message
     },
     email: {
       type: 'string',
@@ -241,7 +242,7 @@ module.exports = {
     status: {
       type: 'string',
       required: true,
-      validators: [app.validators.matches(/^(?:active|disabled)$/)],
+      validators: [[app.validators.matches(/^(?:active|disabled)$/), 'Status must be one of "active" or "disabled".']], // demonstrates using an array to defined a custom error message
       default: 'active'
     }
   }
