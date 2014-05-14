@@ -1,6 +1,6 @@
 {
   "name": "cantina-models-schemas",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Schemas for cantina-models",
   "private": true,
   "main": "cantina-models-schemas.js",
