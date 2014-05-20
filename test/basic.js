@@ -88,6 +88,12 @@ describe('basic', function () {
   it('can create an extended schema from an existing schema', function () {
     var extended = app.schemas.test.extend({
       name: 'extended',
+      indexes: {
+        mongo: [
+          [{ id: -1 }, { unique: true }],
+          { age: 1 }
+        ]
+      },
       properties: {
         name: {
           first: {
@@ -101,6 +107,7 @@ describe('basic', function () {
       }
     });
     assert.equal(extended.name, 'extended');
+    assert.deepEqual(extended.indexes.mongo, [[{ id: -1 }, { unique: true }], { 'name.full': 1 }, { age: 1 } ]);
     assert.strictEqual(nested.get(extended.properties, 'name.first.required'), true);
     assert.strictEqual(nested.get(extended.properties, 'name.first.type'), 'string');
     assert.strictEqual(nested.get(extended.properties, 'name.last.type'), 'string');

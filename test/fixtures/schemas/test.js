@@ -4,6 +4,12 @@
 module.exports = {
   name: 'test',
   version: '0.0.1',
+  indexes: {
+    mongo: [
+      [{ id: 1 }, { unique: true }],
+      { 'name.full': 1 }
+    ]
+  },
   properties: {
     id: {
       type: 'string',
