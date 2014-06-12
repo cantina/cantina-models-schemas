@@ -27,7 +27,6 @@ describe('basic', function () {
   it('works', function () {
     assert(app.schemas);
     assert.equal(typeof app.Schema, 'function');
-    assert.equal(typeof app.loadSchemas, 'function');
   });
 
   it('throws if schema has no name', function () {
@@ -49,7 +48,7 @@ describe('basic', function () {
   });
 
   it('can load schemas from a directory', function () {
-    app.loadSchemas('test/fixtures/schemas');
+    app.load('schemas', {parent: __dirname + '/fixtures'});
     assert(app.schemas.test instanceof app.Schema);
   });
 

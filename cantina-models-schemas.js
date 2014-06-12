@@ -6,14 +6,12 @@ var app = require('cantina')
 app.Schema = Schema;
 app.schemas = {};
 
-/**
- * Load schemas from a directory.
- */
-app.loadSchemas = function (dir, cwd) {
-  var schemas = app.load(dir, cwd);
+// Register a loader for schemas.
+app.loader('schemas', function (options) {
+  var schemas = app.load('modules', options);
   Object.keys(schemas).forEach(function (name) {
     var schema = schemas[name];
     if (!schema.name) schema.name = name;
     app.schemas[schema.name] = new Schema(schema);
   });
-};
+});

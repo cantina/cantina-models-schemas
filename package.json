@@ -1,8 +1,10 @@
 {
   "name": "cantina-models-schemas",
-  "version": "3.0.10",
   "description": "Schemas for cantina-models",
-  "private": true,
+  "version": "4.0.0-dev",
+  "publishConfig": {
+    "registry": "https://npm-registry.terraeclipse.com"
+  },
   "main": "cantina-models-schemas.js",
   "scripts": {
     "test": "make test"
@@ -17,16 +19,19 @@
     "url": "https://github.com/cantina/cantina-models-schemas/issues"
   },
   "homepage": "https://github.com/cantina/cantina-models-schemas",
-  "devDependencies": {
-    "mocha": "^1.18.2",
-    "idgen": "^2.0.2",
-    "cantina": "git+ssh://git@github.com:cantina/cantina.git#3.x",
-    "cantina-models": "git+ssh://git@github.com:cantina/cantina-models.git#3.1.x",
-    "cantina-models-mongo": "git+ssh://git@github.com:cantina/cantina-models-mongo.git#3.x",
-    "cantina-mongo": "git+ssh://git@github.com:cantina/cantina-mongo#3.x"
-  },
   "dependencies": {
     "nested-objects": "0.0.1",
     "clone": "^0.1.11"
+  },
+  "peerDependencies": {
+    "cantina": "~4.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^1.18.2",
+    "idgen": "^2.0.2",
+    "cantina": "~4.0.0",
+    "cantina-models": "~4.0.0",
+    "cantina-models-mongo": "~4.0.0",
+    "cantina-mongo": "~4.0.0"
   }
 }
