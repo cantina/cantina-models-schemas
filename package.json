@@ -1,7 +1,7 @@
 {
   "name": "cantina-models-schemas",
   "description": "Schemas for cantina-models",
-  "version": "4.0.0-dev",
+  "version": "4.0.0-dev2",
   "publishConfig": {
     "registry": "https://npm-registry.terraeclipse.com"
   },
