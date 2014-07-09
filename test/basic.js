@@ -136,6 +136,33 @@ describe('basic', function () {
     assert.equal(typeof options.save, 'function');
   });
 
+  it('merges custom hook-handlers into the schema-defined ones', function (done) {
+    var ran = {};
+    var obj = {
+      id: 1,
+      name: {
+        first: 'Bozo',
+        last: 'Clown'
+      }
+    };
+    var options = app.schemas.test.getOptions({
+      create: function (model) {
+        ran.create = true;
+      },
+      save: function (model, cb) {
+        ran.save = true;
+        cb();
+      }
+    });
+    options.create(obj);
+    options.save(obj, function (err) {
+      assert.ifError(err);
+      assert(ran.create);
+      assert(ran.save);
+      done();
+    });
+  });
+
   it('runs the hooks', function (done) {
     var ct = 10
       , obj = {
