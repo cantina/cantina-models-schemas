@@ -6,13 +6,13 @@ describe('basic', function () {
     , testSchema = require('./fixtures/schemas/test');
 
   before(function (done) {
-    app = require('cantina');
+    app = require('cantina').createApp();
     app.boot(function (err) {
       assert.ifError(err);
 
       app.conf.set('mongo:db', 'cantina-models-schemas-test-' + idgen());
-      require('../');
-      require('cantina-models-mongo');
+      app.require('../');
+      app.require('cantina-models-mongo');
 
       app.start(done);
     });

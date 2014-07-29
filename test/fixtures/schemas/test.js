@@ -1,58 +1,60 @@
 /**
  * Test Schema.
  */
-module.exports = {
-  name: 'test',
-  version: '0.0.1',
-  indexes: {
-    mongo: [
-      [{ id: 1 }, { unique: true }],
-      { 'name.full': 1 }
-    ]
-  },
-  properties: {
-    id: {
-      type: 'string',
-      required: true,
-      validators: [(function (val) { return 'number' === typeof val; })]
+module.exports = function (app) {
+  return {
+    name: 'test',
+    version: '0.0.1',
+    indexes: {
+      mongo: [
+        [{ id: 1 }, { unique: true }],
+        { 'name.full': 1 }
+      ]
     },
-    name: {
-      first: {
+    properties: {
+      id: {
         type: 'string',
-        validators: [validateString]
+        required: true,
+        validators: [(function (val) { return 'number' === typeof val; })]
       },
-      last: {
-        type: 'string',
-        validators: [validateString],
-        default: ''
-      },
-      full: {
-        type: 'string',
-        prepare: function (model) {
-          var full = [];
-          if (model.name) {
-            if (model.name.first) {
-              full.push(model.name.first);
+      name: {
+        first: {
+          type: 'string',
+          validators: [validateString]
+        },
+        last: {
+          type: 'string',
+          validators: [validateString],
+          default: ''
+        },
+        full: {
+          type: 'string',
+          prepare: function (model) {
+            var full = [];
+            if (model.name) {
+              if (model.name.first) {
+                full.push(model.name.first);
+              }
+              if (model.name.last) {
+                full.push(model.name.last);
+              }
             }
-            if (model.name.last) {
-              full.push(model.name.last);
-            }
+            return full.join(' ');
           }
-          return full.join(' ');
+        }
+      },
+      auth: {
+        hash: {
+          type: 'string',
+          private: true
+        },
+        secret: {
+          type: 'string',
+          private: true
         }
       }
-    },
-    auth: {
-      hash: {
-        type: 'string',
-        private: true
-      },
-      secret: {
-        type: 'string',
-        private: true
-      }
     }
-  }
+  };
 };
 
 /**
