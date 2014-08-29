@@ -1,7 +1,7 @@
 {
   "name": "cantina-models-schemas",
   "description": "Schemas for cantina-models",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "main": "cantina-models-schemas.js",
   "scripts": {
     "test": "make test"
