@@ -26,14 +26,14 @@
     "clone": "^0.1.11"
   },
   "peerDependencies": {
-    "cantina": "~4.1.0"
+    "cantina": "^4.1.0"
   },
   "devDependencies": {
     "mocha": "^1.18.2",
     "idgen": "^2.0.2",
-    "cantina": "~4.1.0",
-    "cantina-models": "~4.1.0",
-    "cantina-models-mongo": "~4.1.0",
-    "cantina-mongo": "~4.1.0"
+    "cantina": "^4.1.0",
+    "cantina-models": "^4.1.0",
+    "cantina-models-mongo": "^4.1.0",
+    "cantina-mongo": "^4.1.0"
   }
 }
